@@ -1,14 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+//import sise from './src/Sise';
+import krx from 'krx-stock-api';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return 
+ 
+(async () => console.log(await krx.getStock('005930')))();
 }
 
 const styles = StyleSheet.create({
