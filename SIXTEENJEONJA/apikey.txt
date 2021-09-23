@@ -1,0 +1,7 @@
+https://cors-anywhere.herokuapp.com/http://api.seibro.or.kr/openapi/service/StockSvc/getStkIsinByNmN1?secnNm=삼성&ServiceKey=lkNel9H8danjIKtiS6I8D46DLEFCWbJgvwMA3KcMQwf0j702Hc8px8I98KHm3ImOoCYJb4EHcoY4Pd81knqKMg==
+
+https://cors-anywhere.herokuapp.com/http://api.seibro.or.kr/openapi/service/StockSvc/getStkIsinByNmN1?secnNm=삼성&ServiceKey=lkNel9H8danjIKtiS6I8D46DLEFCWbJgvwMA3KcMQwf0j702Hc8px8I98KHm3ImOoCYJb4EHcoY4Pd81knqKMg%3D%3D
+
+https://cors-anywhere.herokuapp.com/http://api.seibro.or.kr/openapi/service/StockSvc/getDividendRankN1?secnNm=삼성&ServiceKey=lkNel9H8danjIKtiS6I8D46DLEFCWbJgvwMA3KcMQwf0j702Hc8px8I98KHm3ImOoCYJb4EHcoY4Pd81knqKMg%3D%3D
+
+http://asp1.krx.co.kr/servlet/krx.asp.XMLSise?code=005930
