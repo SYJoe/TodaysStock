@@ -11,7 +11,12 @@ const options = {
 axios(options)
   .then(response => {
 	const response_convert = Iconv.decode(response.data, "EUC-KR").toString();
-    console.log(response_convert);
+	const cur_value_index = response_convert.indexOf('현재가'); 
+	const cur_value = response_convert.substr(cur_value_index + 4, 6);
+	const pre_value_index = response_convert.indexOf('전일가'); 
+	const pre_value = response_convert.substr(pre_value_index + 4, 6);
+    console.log(cur_value);
+	console.log(pre_value);
   }).catch((error) => {
   console.error(error);
 });
