@@ -1,37 +1,33 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Iconv from 'iconv-lite';
+
+const options = {
+  url: 'https://finance.naver.com/item/main.nhn?code=005930',
+  method: 'GET',
+  headers: {'User-Agent':'Chrome/81.0.4044.92'},
+  responseType : "arraybuffer"
+};
 
 function Sise() {
-  const [sise, setSise] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+CurrentValue = axios(options).then(response => {
+	const response_convert = Iconv.decode(response.data, "EUC-KR").toString();
+	const cur_value_index = response_convert.indexOf('현재가'); 
+	const cur_value = response_convert.substr(cur_value_index + 4, 6);
+    console.log(cur_value);
+  return cur_value;
+  }).catch((error) => {
+  console.error(error);
+});
 
-  useEffect(() => {
-    const fetchsise = async () => {
-      try {
-        setError(null);
-        setSise(null);
-        setLoading(true);
-        const response = await axios.get(
-          'https://finance.naver.com/item/main.nhn?code=005930'
-        );
-        setSise(response.data);
-      } catch (e) {
-        setError(e);
-      }
-      setLoading(false);
-    };
-
-    fetchsise();
-  }, []);
-
-  if (loading) return <div>로딩중..</div>;
-  if (error) return <div>에러가 발생했습니다</div>;
-  if (!sise) return null;
-	console.log(response.data);
-  return (
-	  response.data
-  );
+PreValue = axios(options).then(response => {
+	const response_convert = Iconv.decode(response.data, "EUC-KR").toString();
+	const pre_value_index = response_convert.indexOf('전일가'); 
+	const pre_value = response_convert.substr(pre_value_index + 4, 6);
+	console.log(pre_value);
+  return pre_value;
+  }).catch((error) => {
+  console.error(error);
+});
 }
 
-export default Sise;
+export default new Sise;
