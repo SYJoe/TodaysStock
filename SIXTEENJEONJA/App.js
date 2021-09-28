@@ -10,13 +10,11 @@ export default class App extends React.Component {
     const Stack = App.Stack;
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Start">
           <Stack.Screen
             name="Main"
             component={mainScreen}
             options={{ title: 'Main', headerShown : false, }}
           />
-        </Stack.Navigator>
       </NavigationContainer>
     );
   }

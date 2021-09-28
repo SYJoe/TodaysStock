@@ -48,9 +48,75 @@ export default class MainScreen extends React.Component {
 	renderPreValue() {
 		return (
       <View style = {styles.container_temp}>
-        <Text style={styles.text_temp}>{currentValue}</Text>
+        <Text style={styles.text_temp}>{preValue}</Text>
       </View>
     	);
+	}
+	
+	renderWeatherIcon() {
+		if(currentValue - preValue > 0)
+		{
+			return (
+        	<View key={index}>
+          		<Image source={{
+            		uri: `http://http://openweathermap.org/img/wn/01d@4x.png`,
+            		width: 180,
+            		height: 180,
+          		}} />
+        	</View>
+			);
+		}
+		else if(currentValue - preValue < 0)
+		{
+			return (
+        	<View key={index}>
+          		<Image source={{
+            		uri: `http://http://openweathermap.org/img/wn/09d@4x.png`,
+            		width: 180,
+            		height: 180,
+          		}} />
+        	</View>
+			);
+		}
+		else
+		{
+			return (
+        	<View key={index}>
+          		<Image source={{
+            		uri: `http://http://openweathermap.org/img/wn/03d@4x.png`,
+            		width: 180,
+            		height: 180,
+          		}} />
+        	</View>
+			);
+		}
+	}
+	
+	renderGradient() {
+		if(currentValue - preValue > 0)
+		{
+			return (
+        	<LinearGradient
+          colors={["#00C6FB", "#005BEA"]}
+          style = {styles.container}/>
+			);
+		}
+		else if(currentValue - preValue < 0)
+		{
+			return (
+        	<LinearGradient
+          colors={["#D7D2CC", "#304352"]}
+          style = {styles.container}/>
+			);
+		}
+		else
+		{
+			return (
+        	<LinearGradient
+          colors={["#F0F2F0", "#000C40"]}
+          style = {styles.container}/>
+			);
+		}
 	}
 	
   render() {
@@ -63,10 +129,11 @@ export default class MainScreen extends React.Component {
     }
 
     return (
-      <LinearGradient
-          colors={["#00C6FB", "#005BEA"]}
-          style = {styles.container}
-       >
+      <View style={styles.container}>
+          {this.renderGradient()()}
+		<View style={styles.conditionContainer}>
+          {this.renderWeatherIcon()()}
+        </View>
         <View style = {styles.container_mid}>
           <View>
             {this.renderCurrentValue()}
@@ -75,7 +142,7 @@ export default class MainScreen extends React.Component {
             {this.renderPreValue()}
           </View>
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 }
