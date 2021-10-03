@@ -9,7 +9,7 @@ const options = {
 };
 
 function Sise() {
-CurrentValue = axios(options).then(response => {
+const CurrentValue = axios(options).then(response => {
 	const response_convert = Iconv.decode(response.data, "EUC-KR").toString();
 	const cur_value_index = response_convert.indexOf('현재가'); 
 	const cur_value = response_convert.substr(cur_value_index + 4, 6);
@@ -19,7 +19,7 @@ CurrentValue = axios(options).then(response => {
   console.error(error);
 });
 
-PreValue = axios(options).then(response => {
+const PreValue = axios(options).then(response => {
 	const response_convert = Iconv.decode(response.data, "EUC-KR").toString();
 	const pre_value_index = response_convert.indexOf('전일가'); 
 	const pre_value = response_convert.substr(pre_value_index + 4, 6);

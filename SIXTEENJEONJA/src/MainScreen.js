@@ -2,9 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Image, StyleSheet, View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import openWeatherApi from '../api/OpenWeatherApi';
 import Constants from 'expo-constants';
-import _get from 'lodash.get';
 import { LinearGradient } from "expo-linear-gradient";
 import sise from "./Sise"
 
@@ -21,16 +19,12 @@ export default class MainScreen extends React.Component {
   componentDidMount() {
 	  var check_current, check_pre = 0;
     this.setState({ isLoading: true });
-    sise.CurrentValue.then(info => {
-        console.log(info);
-        currentValue = info;
+	  
+        currentValue = sise.currentValue;
 		check_current = 1;
-      });
-	  sise.PreValue.then(info => {
-        console.log(info);
-		  preValue = info;
+	  
+		  preValue = sise.preValue;
 		check_pre = 1;
-      });
 	  if(check_pre && check_current)
 		  {
         this.setState({isLoading: false});
@@ -57,7 +51,7 @@ export default class MainScreen extends React.Component {
 		if(currentValue - preValue > 0)
 		{
 			return (
-        	<View key={index}>
+        	<View>
           		<Image source={{
             		uri: `http://http://openweathermap.org/img/wn/01d@4x.png`,
             		width: 180,
@@ -69,7 +63,7 @@ export default class MainScreen extends React.Component {
 		else if(currentValue - preValue < 0)
 		{
 			return (
-        	<View key={index}>
+        	<View>
           		<Image source={{
             		uri: `http://http://openweathermap.org/img/wn/09d@4x.png`,
             		width: 180,
@@ -81,7 +75,7 @@ export default class MainScreen extends React.Component {
 		else
 		{
 			return (
-        	<View key={index}>
+        	<View>
           		<Image source={{
             		uri: `http://http://openweathermap.org/img/wn/03d@4x.png`,
             		width: 180,
@@ -130,9 +124,9 @@ export default class MainScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-          {this.renderGradient()()}
+          {this.renderGradient()}
 		<View style={styles.conditionContainer}>
-          {this.renderWeatherIcon()()}
+          {this.renderWeatherIcon()}
         </View>
         <View style = {styles.container_mid}>
           <View>
@@ -152,7 +146,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     flexDirection: 'column',
-    paddingTop: Platform.OS === `ios` ? 0 : Expo.Constants.statusBarHeight,
+    paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
   },
 
   conditionContainer: {
