@@ -4,90 +4,76 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import { LinearGradient } from "expo-linear-gradient";
-import sise from "./Sise"
-
+import Sise from './Sise'
 export default class MainScreen extends React.Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.state = {
-      isLoading: true
-    };
-	var currentValue, preValue;
-  }
-
-  componentDidMount() {
-	  var check_current, check_pre = 0;
+		this.state = {
+			isLoading: true
+		};
+	}
+	
+	componentDidMount() {
     this.setState({ isLoading: true });
-	  
-        currentValue = sise.currentValue;
-		check_current = 1;
-	  
-		  preValue = sise.preValue;
-		check_pre = 1;
-	  if(check_pre && check_current)
-		  {
-        this.setState({isLoading: false});
-		  }
-  }
+	Sise.fetchSise()
+		.then(info => {
+        console.log(info);
+        this.setState({
+          ...info,
+          isLoading: false
+        });
+      });
+	}
 
+	
 	renderCurrentValue() {
 		return (
-      <View style = {styles.container_temp}>
-        <Text style={styles.text_temp}>{currentValue}</Text>
-      </View>
-    	);
+			<Text style={styles.text_temp}>{this.state}</Text>
+		);
 	}
 	
 	renderPreValue() {
 		return (
-      <View style = {styles.container_temp}>
-        <Text style={styles.text_temp}>{preValue}</Text>
-      </View>
+			<Text style={styles.text_temp}>{pre_value}</Text>
     	);
 	}
 	
 	renderWeatherIcon() {
-		if(currentValue - preValue > 0)
+		if(cur_value - pre_value > 0)
 		{
 			return (
-        	<View>
           		<Image source={{
             		uri: `http://http://openweathermap.org/img/wn/01d@4x.png`,
             		width: 180,
             		height: 180,
           		}} />
-        	</View>
 			);
 		}
-		else if(currentValue - preValue < 0)
+		else if(cur_value - pre_value < 0)
 		{
 			return (
-        	<View>
           		<Image source={{
             		uri: `http://http://openweathermap.org/img/wn/09d@4x.png`,
             		width: 180,
             		height: 180,
           		}} />
-        	</View>
 			);
 		}
 		else
 		{
 			return (
-        	<View>
           		<Image source={{
             		uri: `http://http://openweathermap.org/img/wn/03d@4x.png`,
             		width: 180,
             		height: 180,
           		}} />
-        	</View>
 			);
 		}
 	}
 	
 	renderGradient() {
-		if(currentValue - preValue > 0)
+		if(cur_value - pre_value > 0)
 		{
 			return (
         	<LinearGradient
@@ -95,7 +81,7 @@ export default class MainScreen extends React.Component {
           style = {styles.container}/>
 			);
 		}
-		else if(currentValue - preValue < 0)
+		else if(cur_value - pre_value < 0)
 		{
 			return (
         	<LinearGradient
@@ -116,27 +102,18 @@ export default class MainScreen extends React.Component {
   render() {
     if (this.state.isLoading) {
       return (
-        <View style={styles.container}>
+        <View>
           <ActivityIndicator size="large" />
         </View>
       )
     }
 
     return (
-      <View style={styles.container}>
-          {this.renderGradient()}
-		<View style={styles.conditionContainer}>
-          {this.renderWeatherIcon()}
-        </View>
-        <View style = {styles.container_mid}>
-          <View>
-            {this.renderCurrentValue()}
-          </View>
-          <View>
-            {this.renderPreValue()}
-          </View>
-        </View>
-      </View>
+		<View style={styles.container}>
+			<View style = {styles.container_mid}>
+				<Text>{this.renderCurrentValue()}</Text>
+			</View>
+		</View>
     );
   }
 }
@@ -156,72 +133,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 10,
   },
-
-  text_temp: {
+	text_temp: {
     fontSize: 90,
     justifyContent: 'flex-end',
     alignItems: "flex-start",
-    color: "white",
+    color: "black",
   },
-  text_temp1: {
-    fontSize: 30,
-    color: "white",
-  },
-  container_temp: {
+	container_temp: {
     flex: 1,
     flexDirection: 'row',
+    fontSize: 90,
+    justifyContent: 'flex-end',
+    alignItems: "flex-start",
+    color: "black"
   },
-
   container_mid: {
     flex: 1,
     flexDirection: 'row',
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  container_today: {
-    flexDirection: 'column',
-    padding: 10,
-  },
-  text_day: {
-    fontSize: 20,
-    color: "white",
-  },
-
-  container_wind: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  container_location: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: "flex-end",
-    justifyContent: "center",
-    padding: 3,
-  },
-  text_location: {
-    fontSize: 25,
-    color: "white",
-  },
-
-  text_wind: {
-    fontSize: 30,
-    color: "white",
-  },
-  text_wind1: {
-    fontSize: 20,
-    color: "white",
-  },
-
-  mapContainer: {
-    flex: 2,
-  },
-  mapImage: {
-    aspectRatio: 1.5,
-    width: "100%",
-  },
+  }
 });
