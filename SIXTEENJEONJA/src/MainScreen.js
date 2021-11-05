@@ -1,157 +1,73 @@
-import React from 'react';
-import { ActivityIndicator, Image, StyleSheet, View, Text } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Text, View, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
-import { LinearGradient } from "expo-linear-gradient";
-import Sise from './Sise'
-export default class MainScreen extends React.Component {
-	constructor(props) {
-		super(props);
 
-		this.state = {
-			isLoading: true
-		};
-	}
-	
-	componentDidMount() {
-    this.setState({ isLoading: true });
-	Sise.fetchSise()
-		.then(info => {
-        console.log(info);
-        this.setState({
-          ...info,
-          isLoading: false
-        });
-      });
-	}
+const axios = require("axios");
+const Iconv = require("iconv-lite");
 
+const options = {
+  url: 'https://finance.naver.com/item/main.nhn?code=005930',
+  method: 'GET',
+  headers: {'User-Agent':'Chrome/81.0.4044.92'}
+};
+
+export default MainScreen = () => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
 	
-	renderCurrentValue() {
-		return (
-			<Text style={styles.text_temp}>{this.state}</Text>
-		);
-	}
-	
-	renderPreValue() {
-		return (
-			<Text style={styles.text_temp}>{pre_value}</Text>
-    	);
-	}
-	
-	renderWeatherIcon() {
-		if(cur_value - pre_value > 0)
-		{
-			return (
-          		<Image source={{
-            		uri: `http://http://openweathermap.org/img/wn/01d@4x.png`,
-            		width: 180,
-            		height: 180,
-          		}} />
-			);
-		}
-		else if(cur_value - pre_value < 0)
-		{
-			return (
-          		<Image source={{
-            		uri: `http://http://openweathermap.org/img/wn/09d@4x.png`,
-            		width: 180,
-            		height: 180,
-          		}} />
-			);
-		}
-		else
-		{
-			return (
-          		<Image source={{
-            		uri: `http://http://openweathermap.org/img/wn/03d@4x.png`,
-            		width: 180,
-            		height: 180,
-          		}} />
-			);
-		}
-	}
-	
-	renderGradient() {
-		if(cur_value - pre_value > 0)
-		{
-			return (
-        	<LinearGradient
-          colors={["#00C6FB", "#005BEA"]}
-          style = {styles.container}/>
-			);
-		}
-		else if(cur_value - pre_value < 0)
-		{
-			return (
-        	<LinearGradient
-          colors={["#D7D2CC", "#304352"]}
-          style = {styles.container}/>
-			);
-		}
-		else
-		{
-			return (
-        	<LinearGradient
-          colors={["#F0F2F0", "#000C40"]}
-          style = {styles.container}/>
-			);
-		}
-	}
-	
-  render() {
-    if (this.state.isLoading) {
-      return (
-        <View>
-          <ActivityIndicator size="large" />
-        </View>
-      )
+  const getSise = async () => {
+    try {
+		axios(options).then(response => {
+			const cur_value_index = response.data.indexOf('현재가'); 
+			const cur_value = response.data.substr(cur_value_index + 4, 6);
+			const pre_value_index = response.data.indexOf('전일가'); 
+			const pre_value = response.data.substr(pre_value_index + 4, 6);
+    		console.log(cur_value);
+			console.log(pre_value);
+			let sise = [cur_value, pre_value];
+			setData(sise);
+		}).catch((error) => {
+			console.error(error);
+		});
+	} catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-
-    return (
-		<View style={styles.container}>
-			<View style = {styles.container_mid}>
-				<Text>{this.renderCurrentValue()}</Text>
-			</View>
-		</View>
-    );
   }
-}
+
+  useEffect(() => {
+    getSise();
+  }, []);
+
+  return (
+    <View style={styles.contatiner}>
+		<View style={styles.container_sise}>
+			<Text>
+				{data[0]}
+			</Text>
+			<Text>
+				{data[1]}
+			</Text>
+		</View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+container: {
     backgroundColor: 'white',
     flexDirection: 'column',
-    paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
+    paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight
   },
-
-  conditionContainer: {
-    flex: 2,
-    flexDirection: 'row',
+	container_sise: {
+    flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
-    padding: 10,
+    padding: 10
   },
-	text_temp: {
+  text_temp: {
     fontSize: 90,
-    justifyContent: 'flex-end',
-    alignItems: "flex-start",
     color: "black",
-  },
-	container_temp: {
-    flex: 1,
-    flexDirection: 'row',
-    fontSize: 90,
-    justifyContent: 'flex-end',
-    alignItems: "flex-start",
-    color: "black"
-  },
-  container_mid: {
-    flex: 1,
-    flexDirection: 'row',
-    padding: 20,
-    justifyContent: "center",
-    alignItems: "center",
   }
 });
