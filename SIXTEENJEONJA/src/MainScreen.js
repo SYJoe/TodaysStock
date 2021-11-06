@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image } from 'react-native';
 import Constants from 'expo-constants';
 
 const axios = require("axios");
@@ -36,38 +36,86 @@ export default MainScreen = () => {
     }
   }
 
+  const renderWeatherIcon = () =>  {
+	  const currentValue = data[0];
+	  const preValue = data[1];
+		if(currentValue - preValue > 0)
+		{
+			return (
+          		<Image source={{
+            		uri: 'http://openweathermap.org/img/wn/01d@4x.png',
+            		width: 180,
+            		height: 180,
+          		}} />
+			);
+		}
+		else if(currentValue - preValue < 0)
+		{
+			return (
+          		<Image source={{
+            		uri: 'http://openweathermap.org/img/wn/09d@4x.png',
+            		width: 180,
+            		height: 180,
+          		}} />
+			);
+		}
+		else
+		{
+			return (
+          		<Image source={{
+            		uri: 'http://openweathermap.org/img/wn/03d@4x.png',
+            		width: 180,
+            		height: 180,
+          		}} />
+			);
+		}
+	}
+  
   useEffect(() => {
     getSise();
   }, []);
 
-  return (
-    <View style={styles.contatiner}>
-		<View style={styles.container_sise}>
-			<Text>
-				{data[0]}
-			</Text>
-			<Text>
-				{data[1]}
-			</Text>
-		</View>
-    </View>
+	return (
+		<SafeAreaView style={styles.container}>
+			<SafeAreaView style={styles.container_icon}>
+				{renderWeatherIcon()}
+			</SafeAreaView>
+			<SafeAreaView style={styles.container_sise}>
+				<Text style ={styles.text_sise}>
+					{data[0]}
+				</Text>
+				<Text style ={styles.text_sise}>
+					{data[1]}
+				</Text>
+			</SafeAreaView>
+    	</SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
 container: {
-    backgroundColor: 'white',
+	flex : 1,
+    backgroundColor: 'black',
     flexDirection: 'column',
     paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight
   },
 	container_sise: {
+		flex : 1,
+		backgroundColor : 'white',
     flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
     padding: 10
   },
-  text_temp: {
-    fontSize: 90,
+	container_icon: {
+		flex : 3,
+    flexDirection: 'column',
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10
+  },
+  text_sise: {
+    fontSize: 40,
     color: "black",
   }
 });
