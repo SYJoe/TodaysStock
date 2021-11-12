@@ -35,51 +35,62 @@ export default MainScreen = () => {
       setLoading(false);
     }
   }
-
-  const renderWeatherIcon = () =>  {
-	  const currentValue = data[0];
-	  const preValue = data[1];
-		if(currentValue - preValue > 0)
-		{
-			return (
-          		<Image source={{
-            		uri: 'http://openweathermap.org/img/wn/01d@4x.png',
-            		width: 180,
-            		height: 180,
-          		}} />
-			);
-		}
-		else if(currentValue - preValue < 0)
-		{
-			return (
-          		<Image source={{
-            		uri: 'http://openweathermap.org/img/wn/09d@4x.png',
-            		width: 180,
-            		height: 180,
-          		}} />
-			);
-		}
-		else
-		{
-			return (
-          		<Image source={{
-            		uri: 'http://openweathermap.org/img/wn/03d@4x.png',
-            		width: 180,
-            		height: 180,
-          		}} />
-			);
-		}
-	}
   
   useEffect(() => {
     getSise();
   }, []);
 
+  const renderIconAndBackground = () =>  {
+	  var currentValue = data[0];
+	  currentValue.replace(',','');
+	  var preValue = data[1];
+		preValue.replace(',','');
+	  //currentValue *= 1;
+	//  preValue *= 1;
+	  
+	  console.log("render " + currentValue +  preValue );
+		if(currentValue - preValue > 0)
+		{
+			return (
+				<SafeAreaView backgroundColor = {"#1e88e5"} style={styles.container_icon}>
+          			<Image source={{
+            			uri: 'http://openweathermap.org/img/wn/01d@4x.png',
+            			width: 180,
+            			height: 180,
+          			}} />
+				</SafeAreaView>
+			);
+		}
+		else if(currentValue - preValue < 0)
+		{
+			return (
+				<SafeAreaView backgroundColor = {"#424242"} style={styles.container_icon}>
+          		<Image source={{
+            		uri: 'http://openweathermap.org/img/wn/09d@4x.png',
+            		width: 180,
+            		height: 180,
+          		}} />
+					
+					</SafeAreaView>
+			);
+		}
+		else
+		{
+			return (
+				<SafeAreaView backgroundColor = {"#78909c"} style={styles.container_icon}>
+          		<Image source={{
+            		uri: 'http://openweathermap.org/img/wn/03d@4x.png',
+            		width: 180,
+            		height: 180,
+          		}} />
+					</SafeAreaView>
+			);
+		}
+	}
+
 	return (
 		<SafeAreaView style={styles.container}>
-			<SafeAreaView style={styles.container_icon}>
-				{renderWeatherIcon()}
-			</SafeAreaView>
+				{renderIconAndBackground()}
 			<SafeAreaView style={styles.container_sise}>
 				<Text style ={styles.text_sise}>
 					{data[0]}
@@ -112,7 +123,7 @@ container: {
     flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
-    padding: 10
+    padding: 1
   },
   text_sise: {
     fontSize: 40,
