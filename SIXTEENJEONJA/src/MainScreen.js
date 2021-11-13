@@ -41,14 +41,9 @@ export default MainScreen = () => {
   }, []);
 
   const renderIconAndBackground = () =>  {
-	  var currentValue = data[0];
-	  currentValue.replace(',','');
-	  var preValue = data[1];
-		preValue.replace(',','');
-	  //currentValue *= 1;
-	//  preValue *= 1;
+	  var currentValue = data[0].replace(',', '');
+	  var preValue = data[1].replace(',', '');
 	  
-	  console.log("render " + currentValue +  preValue );
 		if(currentValue - preValue > 0)
 		{
 			return (
