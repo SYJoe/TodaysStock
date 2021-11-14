@@ -41,38 +41,44 @@ export default MainScreen = () => {
   }, []);
 
   const renderIconAndBackground = () =>  {
-	  var currentValue = data[0].replace(',', '');
-	  var preValue = data[1].replace(',', '');
+	  var currentValue = data[0]?.replace(',', '');
+	  var preValue = data[1]?.replace(',', '');
+	  const diff = currentValue - preValue;
 	  
-		if(currentValue - preValue > 0)
+		if(diff > 0)
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#1e88e5"} style={styles.container_icon}>
+				<SafeAreaView backgroundColor = {"#1e88e5"} style = {styles.container_icon}>
           			<Image source={{
             			uri: 'http://openweathermap.org/img/wn/01d@4x.png',
             			width: 180,
             			height: 180,
           			}} />
+					<Text style = {styles.text_updown}>
+						{"▲" + diff}
+					</Text>
 				</SafeAreaView>
 			);
 		}
-		else if(currentValue - preValue < 0)
+		else if(diff < 0)
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#424242"} style={styles.container_icon}>
-          		<Image source={{
-            		uri: 'http://openweathermap.org/img/wn/09d@4x.png',
-            		width: 180,
-            		height: 180,
-          		}} />
-					
-					</SafeAreaView>
+				<SafeAreaView backgroundColor = {"#424242"} style = {styles.container_icon}>
+          			<Image source={{
+            			uri: 'http://openweathermap.org/img/wn/09d@4x.png',
+            			width: 180,
+            			height: 180,
+          			}}/>
+					<Text style = {styles.text_updown} color = {"blue"}>
+						{"▼" + diff}
+					</Text>
+				</SafeAreaView>
 			);
 		}
 		else
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#78909c"} style={styles.container_icon}>
+				<SafeAreaView backgroundColor = {"#78909c"} style = {styles.container_icon}>
           		<Image source={{
             		uri: 'http://openweathermap.org/img/wn/03d@4x.png',
             		width: 180,
@@ -85,14 +91,30 @@ export default MainScreen = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
+			<SafeAreaView style = {styles.container_card}>
 				{renderIconAndBackground()}
-			<SafeAreaView style={styles.container_sise}>
-				<Text style ={styles.text_sise}>
-					{data[0]}
-				</Text>
-				<Text style ={styles.text_sise}>
-					{data[1]}
-				</Text>
+				<SafeAreaView style={styles.container_sise}>
+					<SafeAreaView style = {styles.container_current}>
+						<SafeAreaView style = {styles.container_sise_text}>
+							<Text style ={styles.text_sise1}>
+								{"현재가  "}
+							</Text>
+						</SafeAreaView>
+						<Text style ={styles.text_sise}>
+							{data[0]}
+						</Text>
+					</SafeAreaView>
+					<SafeAreaView style = {styles.container_current}>
+						<SafeAreaView style = {styles.container_sise_text}>
+							<Text style ={styles.text_sise1}>
+								{"전일가  "}
+							</Text>
+						</SafeAreaView>
+						<Text style ={styles.text_sise}>
+							{data[1]}
+						</Text>
+					</SafeAreaView>
+				</SafeAreaView>
 			</SafeAreaView>
     	</SafeAreaView>
   );
@@ -100,28 +122,65 @@ export default MainScreen = () => {
 
 const styles = StyleSheet.create({
 container: {
-	flex : 1,
-    backgroundColor: 'black',
+	flex: 1,
+    backgroundColor: 'white',
     flexDirection: 'column',
-    paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight
+    paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
   },
 	container_sise: {
 		flex : 1,
-		backgroundColor : 'white',
+		backgroundColor : "#f5f5f5",
     flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
-    padding: 10
+		borderBottomRightRadius : 10,
+		borderBottomLeftRadius : 10
+  },
+	container_card: {
+		flex: 1,
+		margin : 20,
+	flexDirection: 'column',
+    alignItems: "stretch",
+    justifyContent: "center",
+	borderRadius: 10,
+	 ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 10,
+          height: 10,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 20,
+      },
+    })
   },
 	container_icon: {
-		flex : 3,
+	flex : 3,
     flexDirection: 'column',
     alignItems: "center",
     justifyContent: "center",
-    padding: 1
-  },
+	borderTopLeftRadius : 10,
+		borderTopRightRadius : 10
+   },
   text_sise: {
     fontSize: 40,
     color: "black",
+  },
+  text_sise1: {
+    fontSize: 20,
+    color: "black",
+  },
+	text_updown: {
+    fontSize: 20
+  },
+	container_current: {
+    flexDirection: 'row'
+  },
+	container_sise_text: {
+	paddingTop: 20
   }
 });
