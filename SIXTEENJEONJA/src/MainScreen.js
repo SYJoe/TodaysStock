@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
+import Arrow_up from '../assets/arrow_up.png'
+import StockList from './ListScreen.js'
 
 const axios = require("axios");
 const Iconv = require("iconv-lite");
@@ -35,11 +37,11 @@ export default MainScreen = () => {
       setLoading(false);
     }
   }
-  
+
   useEffect(() => {
     getSise();
   }, []);
-
+	
   const renderIconAndBackground = () =>  {
 	  var currentValue = data[0]?.replace(',', '');
 	  var preValue = data[1]?.replace(',', '');
@@ -48,43 +50,51 @@ export default MainScreen = () => {
 		if(diff > 0)
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#1e88e5"} style = {styles.container_icon}>
-          			<Image source={{
-            			uri: 'http://openweathermap.org/img/wn/01d@4x.png',
-            			width: 180,
-            			height: 180,
-          			}} />
-					<Text style = {styles.text_updown}>
-						{"▲" + diff}
-					</Text>
+				<SafeAreaView backgroundColor = {"#1e88e5"} style = {styles.container_card_up}>
+					<SafeAreaView style = {styles.container_icon}>
+          				<Image source={{
+            				uri: 'http://openweathermap.org/img/wn/01d@4x.png',
+            				width: 180,
+            				height: 180,
+          				}} />
+					</SafeAreaView>
+					<SafeAreaView style = {styles.container_diff}>
+						<Text style = {styles.text_updown}>
+							{"▲" + diff}
+						</Text>
+					</SafeAreaView>
 				</SafeAreaView>
 			);
 		}
 		else if(diff < 0)
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#424242"} style = {styles.container_icon}>
-          			<Image source={{
-            			uri: 'http://openweathermap.org/img/wn/09d@4x.png',
-            			width: 180,
-            			height: 180,
-          			}}/>
-					<Text style = {styles.text_updown} color = {"blue"}>
-						{"▼" + diff}
-					</Text>
+				<SafeAreaView backgroundColor = {"#424242"} style = {styles.container_card_up}>
+					<SafeAreaView style = {styles.container_icon}>
+          				<Image source={{
+            				uri: 'http://openweathermap.org/img/wn/09d@4x.png',
+            				width: 180,
+            				height: 180,
+          				}}/>
+					</SafeAreaView>
+					<SafeAreaView style = {styles.container_diff}>
+						<Text style = {styles.text_updown} color = {"blue"}>
+							{"▼" + diff}
+						</Text>
+					</SafeAreaView>
 				</SafeAreaView>
 			);
 		}
 		else
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#78909c"} style = {styles.container_icon}>
+				<SafeAreaView backgroundColor = {"#78909c"} style = {styles.container_card_up}>
           		<Image source={{
             		uri: 'http://openweathermap.org/img/wn/03d@4x.png',
             		width: 180,
             		height: 180,
           		}} />
-					</SafeAreaView>
+				</SafeAreaView>
 			);
 		}
 	}
@@ -116,34 +126,39 @@ export default MainScreen = () => {
 					</SafeAreaView>
 				</SafeAreaView>
 			</SafeAreaView>
+			<SafeAreaView style = {styles.container_listbut}>
+				<TouchableOpacity style = {{alignItems : "center"}} onPress = {StockList}>
+					<Image source = {Arrow_up} style = {{width : 35, height : 35}}/>
+				</TouchableOpacity>
+			</SafeAreaView>
     	</SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-container: {
-	flex: 1,
-    backgroundColor: 'white',
-    flexDirection: 'column',
-    paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
-  },
+	container: {
+		flex: 1,
+		backgroundColor: 'white',
+		flexDirection: 'column',
+		paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
+	},
 	container_sise: {
 		flex : 1,
 		backgroundColor : "#f5f5f5",
-    flexDirection: 'column',
-    alignItems: "center",
-    justifyContent: "center",
+    	flexDirection: 'column',
+    	alignItems: "center",
+    	justifyContent: "center",
 		borderBottomRightRadius : 10,
 		borderBottomLeftRadius : 10
-  },
+	},
 	container_card: {
-		flex: 1,
+		flex: 15,
 		margin : 20,
-	flexDirection: 'column',
-    alignItems: "stretch",
-    justifyContent: "center",
-	borderRadius: 10,
-	 ...Platform.select({
+		flexDirection: 'column',
+    	alignItems: "stretch",
+    	justifyContent: "center",
+		borderRadius: 10,
+		...Platform.select({
       ios: {
         shadowColor: "#000",
         shadowOffset: {
@@ -156,31 +171,44 @@ container: {
       android: {
         elevation: 20,
       },
-    })
-  },
-	container_icon: {
-	flex : 3,
-    flexDirection: 'column',
-    alignItems: "center",
-    justifyContent: "center",
-	borderTopLeftRadius : 10,
+		})
+	},
+	container_card_up: {
+		flex : 3,
+    	flexDirection: 'column',
+    	alignItems: "center",
+    	justifyContent: "center",
+		borderTopLeftRadius : 10,
 		borderTopRightRadius : 10
-   },
-  text_sise: {
-    fontSize: 40,
-    color: "black",
-  },
-  text_sise1: {
-    fontSize: 20,
-    color: "black",
-  },
+	},
+	text_sise: {
+		fontSize: 40,
+    	color: "black",
+	},
+	text_sise1: {
+		fontSize: 20,
+		color: "black",
+	},
 	text_updown: {
-    fontSize: 20
-  },
+		fontSize: 20
+	},
 	container_current: {
-    flexDirection: 'row'
-  },
+		flexDirection: 'row'
+  	},
 	container_sise_text: {
-	paddingTop: 20
-  }
+		paddingTop: 20
+  	},
+	container_diff: {
+		flex : 1
+	},
+	container_icon: {
+		flex : 13,
+		alignItems : "center",
+    	justifyContent: "center",
+	},
+	container_listbut: {
+		flex : 1,
+    	alignItems: "stretch",
+    	justifyContent: "center",
+	}
 });
