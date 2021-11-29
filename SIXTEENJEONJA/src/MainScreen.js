@@ -2,20 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import Arrow_up from '../assets/arrow_up.png'
-import StockList from './ListScreen.js'
+import listScreen from './ListScreen.js'
 
 const axios = require("axios");
 const Iconv = require("iconv-lite");
 
-const options = {
-  url: 'https://finance.naver.com/item/main.nhn?code=005930',
+export default MainScreen = ({navigation}, code_i) => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+	
+	let code = code ? code_i.toString() : "005930";
+	
+	const options = {
+  url: 'https://finance.naver.com/item/main.nhn?code=' + code,
   method: 'GET',
   headers: {'User-Agent':'Chrome/81.0.4044.92'}
 };
-
-export default MainScreen = () => {
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
 	
   const getSise = async () => {
     try {
@@ -26,6 +28,7 @@ export default MainScreen = () => {
 			const pre_value = response.data.substr(pre_value_index + 4, 6);
     		console.log(cur_value);
 			console.log(pre_value);
+			console.log(options.url);
 			let sise = [cur_value, pre_value];
 			setData(sise);
 		}).catch((error) => {
@@ -69,7 +72,7 @@ export default MainScreen = () => {
 		else if(diff < 0)
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#424242"} style = {styles.container_card_up}>
+				<SafeAreaView backgroundColor = {"#757575"} style = {styles.container_card_up}>
 					<SafeAreaView style = {styles.container_icon}>
           				<Image source={{
             				uri: 'http://openweathermap.org/img/wn/09d@4x.png',
@@ -127,8 +130,8 @@ export default MainScreen = () => {
 				</SafeAreaView>
 			</SafeAreaView>
 			<SafeAreaView style = {styles.container_listbut}>
-				<TouchableOpacity style = {{alignItems : "center"}} onPress = {StockList}>
-					<Image source = {Arrow_up} style = {{width : 35, height : 35}}/>
+				<TouchableOpacity onPress={() => navigation.navigate('List')}>
+					<Text>ListScreen</Text>
 				</TouchableOpacity>
 			</SafeAreaView>
     	</SafeAreaView>
