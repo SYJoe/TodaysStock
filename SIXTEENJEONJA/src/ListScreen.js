@@ -7,7 +7,7 @@ const axios = require("axios");
 
 export default ListScreen = ({navigation}) => {
 	const [isLoading, setLoading] = useState(true);
-	const [item, setData] = useState([]);
+	const [data, setData] = useState([]);
 	
 	const getList = async () => {
 		let sise = [
@@ -21,7 +21,7 @@ export default ListScreen = ({navigation}) => {
 				name : "삼성출판사",
 				code : "068290"
 			}
-		];
+		]; //Test data
 		setData(sise);	
 	}
 	
@@ -32,12 +32,12 @@ export default ListScreen = ({navigation}) => {
 	const onPressItem = (item) => {
     	console.log('onPressItem =', item.code);
     	navigation.goBack();
-		navigation.state.params.onGoBack(item.code);
+		//Add setParams
   }
 	
-	const renderItem = (data) => {
+	const renderItem = (item) => {
     return (
-      <TouchableOpacity style={styles.item} onPress={() => onPressItem(data)}>
+      <TouchableOpacity style={styles.item} onPress={() => onPressItem(item)}>
         <Text style={styles.text_item}>{item.name}</Text>
       </TouchableOpacity>
     );
@@ -46,10 +46,10 @@ export default ListScreen = ({navigation}) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<FlatList
-        		data={item}
-        		renderItem={renderItem}
-        		keyExtractor={item => String(item.idx)}
-      		/>
+                renderItem={({ item }) => renderItem(item)}
+                keyExtractor={item => item}
+                data={data}
+      />
     	</SafeAreaView>
   );
 };

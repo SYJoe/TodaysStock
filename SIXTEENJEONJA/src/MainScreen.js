@@ -7,9 +7,10 @@ import listScreen from './ListScreen.js'
 const axios = require("axios");
 const Iconv = require("iconv-lite");
 
-export default MainScreen = ({navigation}, code_i) => {
+export default MainScreen = ({navigation}) => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+	let code_i;
 	
 	let code = code ? code_i.toString() : "005930";
 	
