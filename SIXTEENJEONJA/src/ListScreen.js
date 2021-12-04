@@ -5,24 +5,24 @@ import Arrow_up from '../assets/arrow_up.png'
 
 const axios = require("axios");
 
-export default ListScreen = ({ navigation }) => {
+export default ListScreen = ({ route, navigation }) => {
 	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
-		
+	
 	const getList = async () => {
 		let sise = [
 			{
-				idx : 1,
+				id : 1,
 				name : "CJ CGV",
 				code : "079160"
 			},
 			{
-				idx : 2,
+				id : 2,
 				name : "삼성출판사",
 				code : "068290"
 			},
 			{
-				idx : 3,
+				id : 3,
 				name : "삼성전자",
 				code : "005930"
 			}
@@ -36,7 +36,11 @@ export default ListScreen = ({ navigation }) => {
 	
 	const onPressItem = (item) => {
     	console.log('onPressItem =', item.code);
-    	navigation.navigate('Main', { code : item.code });
+		navigation.dispatch( navigation.navigate({
+            name : 'Main',
+            params : { code : item.code },
+            merge : true,
+          }) );
   }
 	
 	const renderItem = (item) => {
@@ -51,7 +55,7 @@ export default ListScreen = ({ navigation }) => {
 		<SafeAreaView style={styles.container}>
 			<FlatList
                 renderItem={({ item }) => renderItem(item)}
-                keyExtractor={item => String(item)}
+                keyExtractor={item => String(item.id)}
                 data={data}
       />
     	</SafeAreaView>

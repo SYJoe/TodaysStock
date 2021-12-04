@@ -12,13 +12,15 @@ export default MainScreen = ({route, navigation}) => {
 	const [data, setData] = useState([]);
 	let code = (route.params) ? route.params.code : "000000";
 	
-	console.log(code);
+	console.log("main :" + code);
 	
 	const options = {
 		url: 'https://finance.naver.com/item/main.nhn?code=' + code,
   		method: 'GET',
   		headers: {'User-Agent':'Chrome/81.0.4044.92'}
 	};
+	
+	console.log("url :" + options.url);
 	
 	const getSise = async () => {
     	try {
@@ -44,18 +46,7 @@ export default MainScreen = ({route, navigation}) => {
 
 	useEffect(() => {
 		getSise();
-	}, []);
-	
-	const listNavigation = () => {
-		if(!route.params)
-		{
-			navigation.navigate("List");
-		}
-		else
-		{
-			navigation.goBack();	
-		}
-	}
+	}, [route.params.code]);
 	
   const renderIconAndBackground = () => {
 	  var currentValue = data[0]?.replace(',', '');
@@ -142,7 +133,7 @@ export default MainScreen = ({route, navigation}) => {
 				</SafeAreaView>
 			</SafeAreaView>
 			<SafeAreaView style = {styles.container_listbut}>
-				<TouchableOpacity onPress={() => listNavigation()}>
+				<TouchableOpacity onPress={() => navigation.navigate("List")}>
 					<Text>ListScreen</Text>
 				</TouchableOpacity>
 			</SafeAreaView>

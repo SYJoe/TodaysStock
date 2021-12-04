@@ -13,14 +13,14 @@ export default function App() {
 		<NavigationContainer>
         <Stack.Navigator initialRouteName="Main">
 			<Stack.Screen
-            name="Main"
-            component={mainScreen}
-            options={{ title: 'Main', headerShown : false, }}>
+				name="Main"
+            	component={mainScreen}
+            	options={{ title: 'Main', headerShown : false, }}>
 			</Stack.Screen>
 			<Stack.Screen
-            name="List"
-            component={listScreen}
-            options={{ title: 'List', headerShown : false, }}>
+            	name="List"
+            	component={listScreen}
+            	options={{ title: 'List', headerShown : false, }}>
 			</Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
