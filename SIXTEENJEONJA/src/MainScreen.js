@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
-import Arrow_up from '../assets/arrow_up.png'
-import listScreen from './ListScreen.js'
+import image_menu from '../assets/menu.png'
 
 const axios = require("axios");
-const Iconv = require("iconv-lite");
 
-export default MainScreen = ({route, navigation}) => {
+export default MainScreen = ({ route, navigation }) => {
 	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
 	let code = (route.params) ? route.params.code : "000000";
 	
-	console.log("main :" + code);
+	console.log("main : " + code);
 	
 	const options = {
 		url: 'https://finance.naver.com/item/main.nhn?code=' + code,
@@ -46,7 +44,7 @@ export default MainScreen = ({route, navigation}) => {
 
 	useEffect(() => {
 		getSise();
-	}, [route.params.code]);
+	}, [route.params]);
 	
   const renderIconAndBackground = () => {
 	  var currentValue = data[0]?.replace(',', '');
@@ -85,7 +83,7 @@ export default MainScreen = ({route, navigation}) => {
 					</SafeAreaView>
 					<SafeAreaView style = {styles.container_diff}>
 						<Text style = {styles.text_updown} color = {"blue"}>
-							{"▼" + diff}
+							{"▼" + diff*-1}
 						</Text>
 					</SafeAreaView>
 				</SafeAreaView>
@@ -134,7 +132,7 @@ export default MainScreen = ({route, navigation}) => {
 			</SafeAreaView>
 			<SafeAreaView style = {styles.container_listbut}>
 				<TouchableOpacity onPress={() => navigation.navigate("List")}>
-					<Text>ListScreen</Text>
+					<Image style = { styles.image_menu } source = { image_menu }/>
 				</TouchableOpacity>
 			</SafeAreaView>
     	</SafeAreaView>
@@ -214,7 +212,14 @@ const styles = StyleSheet.create({
 	},
 	container_listbut: {
 		flex : 1,
+		flexDirection : "row",
     	alignItems: "stretch",
-    	justifyContent: "center",
-	}
+    	justifyContent: "flex-end",
+		padding : 10
+	},
+	image_menu:{
+        width:60,
+        height:60,
+        padding:10
+    }
 });

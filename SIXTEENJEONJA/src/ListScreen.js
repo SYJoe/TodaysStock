@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import Arrow_up from '../assets/arrow_up.png'
+import image_menu from '../assets/menu.png'
 
 const axios = require("axios");
 
@@ -57,7 +58,12 @@ export default ListScreen = ({ route, navigation }) => {
                 renderItem={({ item }) => renderItem(item)}
                 keyExtractor={item => String(item.id)}
                 data={data}
-      />
+      		/>	
+			<SafeAreaView style = {styles.container_listbut}>
+				<TouchableOpacity onPress={() => navigation.goBack()}>
+					<Image style = { styles.image_menu } source = { image_menu }/>
+				</TouchableOpacity>
+			</SafeAreaView>
     	</SafeAreaView>
   );
 };
@@ -133,11 +139,6 @@ const styles = StyleSheet.create({
 		alignItems : "center",
     	justifyContent: "center",
 	},
-	container_listbut: {
-		flex : 1,
-    	alignItems: "stretch",
-    	justifyContent: "center",
-	},
 	 item: {
     flex: 1,
     height: 50,
@@ -149,5 +150,17 @@ const styles = StyleSheet.create({
   text_item: {
     fontSize: 15,
     textAlign: 'center',
-  }
+  },
+	container_listbut: {
+		flex : 1,
+		flexDirection : "row",
+    	alignItems: "stretch",
+    	justifyContent: "flex-end",
+		padding : 10
+	},
+	image_menu:{
+        width:60,
+        height:60,
+        padding:10
+    }
 });
