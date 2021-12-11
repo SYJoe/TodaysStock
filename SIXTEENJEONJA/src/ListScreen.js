@@ -39,7 +39,7 @@ export default ListScreen = ({ route, navigation }) => {
     	console.log('onPressItem =', item.code);
 		navigation.dispatch( navigation.navigate({
             name : 'Main',
-            params : { code : item.code },
+            params : { code : item.code, name : item.name },
             merge : true,
           }) );
   }

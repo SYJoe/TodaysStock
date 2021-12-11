@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
-import image_menu from '../assets/menu.png'
+import image_menu from '../assets/menu.png';
+import { LinearGradient } from "expo-linear-gradient";
 
 const axios = require("axios");
 
@@ -9,6 +10,7 @@ export default MainScreen = ({ route, navigation }) => {
 	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
 	let code = (route.params) ? route.params.code : "000000";
+	let name = (route.params) ? route.params.name : "NULL";
 	
 	console.log("main : " + code);
 	
@@ -50,11 +52,13 @@ export default MainScreen = ({ route, navigation }) => {
 	  var currentValue = data[0]?.replace(',', '');
 	  var preValue = data[1]?.replace(',', '');
 	  const diff = currentValue - preValue;
+	  const diff_percent = (diff / preValue) * 100;
 	  
 		if(diff > 0)
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#1e88e5"} style = {styles.container_card_up}>
+				<LinearGradient colors={["#5B86E5", "#36D1DC"]} style = {styles.container_card_up}>
+					<Text style = {styles.text_name}>{name}</Text>
 					<SafeAreaView style = {styles.container_icon}>
           				<Image source={{
             				uri: 'http://openweathermap.org/img/wn/01d@4x.png',
@@ -63,17 +67,18 @@ export default MainScreen = ({ route, navigation }) => {
           				}} />
 					</SafeAreaView>
 					<SafeAreaView style = {styles.container_diff}>
-						<Text style = {styles.text_updown}>
-							{"▲" + diff}
+						<Text style = {styles.text_diffup} >
+							{"▲" + diff + " (" + diff_percent.toFixed(2) + "%)"}
 						</Text>
 					</SafeAreaView>
-				</SafeAreaView>
+				</LinearGradient>
 			);
 		}
 		else if(diff < 0)
 		{
 			return (
-				<SafeAreaView backgroundColor = {"#757575"} style = {styles.container_card_up}>
+				<LinearGradient colors={["#29323c", "#bdc3c7"]} style = {styles.container_card_up}>
+					<Text style = {styles.text_name}>{name}</Text>
 					<SafeAreaView style = {styles.container_icon}>
           				<Image source={{
             				uri: 'http://openweathermap.org/img/wn/09d@4x.png',
@@ -82,11 +87,11 @@ export default MainScreen = ({ route, navigation }) => {
           				}}/>
 					</SafeAreaView>
 					<SafeAreaView style = {styles.container_diff}>
-						<Text style = {styles.text_updown} color = {"blue"}>
-							{"▼" + diff*-1}
+						<Text style = {styles.text_diffdown} color = {"blue"}>
+							{"▼" + diff*-1 + " (" + diff_percent.toFixed(2) + "%)"}
 						</Text>
 					</SafeAreaView>
-				</SafeAreaView>
+				</LinearGradient>
 			);
 		}
 		else
@@ -183,7 +188,8 @@ const styles = StyleSheet.create({
     	alignItems: "center",
     	justifyContent: "center",
 		borderTopLeftRadius : 10,
-		borderTopRightRadius : 10
+		borderTopRightRadius : 10,
+		
 	},
 	text_sise: {
 		fontSize: 40,
@@ -193,8 +199,13 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		color: "black",
 	},
-	text_updown: {
-		fontSize: 20
+	text_diffup: {
+		fontSize: 20,
+		color : '#d32f2f'
+	},
+	text_diffdown: {
+		fontSize: 20,
+		color : '#1e88e5'
 	},
 	container_current: {
 		flexDirection: 'row'
@@ -203,6 +214,7 @@ const styles = StyleSheet.create({
 		paddingTop: 20
   	},
 	container_diff: {
+		padding : 10,
 		flex : 1
 	},
 	container_icon: {
@@ -215,11 +227,15 @@ const styles = StyleSheet.create({
 		flexDirection : "row",
     	alignItems: "stretch",
     	justifyContent: "flex-end",
-		padding : 10
+		paddingBottom : 10
 	},
 	image_menu:{
         width:60,
-        height:60,
-        padding:10
-    }
+        height:60
+    },
+	text_name : {
+		padding : 10,
+		fontSize : 25,
+		color : 'white'
+	}
 });
