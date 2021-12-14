@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
-import Arrow_up from '../assets/arrow_up.png'
 import image_menu from '../assets/menu.png'
+import { list } from './ParsingStockList.js'
 
 const axios = require("axios");
 
@@ -11,24 +11,7 @@ export default ListScreen = ({ route, navigation }) => {
 	const [data, setData] = useState([]);
 	
 	const getList = async () => {
-		let sise = [
-			{
-				id : 1,
-				name : "CJ CGV",
-				code : "079160"
-			},
-			{
-				id : 2,
-				name : "삼성출판사",
-				code : "068290"
-			},
-			{
-				id : 3,
-				name : "삼성전자",
-				code : "005930"
-			}
-		]; //Test data
-		setData(sise);	
+		setData(list);	
 	}
 	
 	useEffect(() => {

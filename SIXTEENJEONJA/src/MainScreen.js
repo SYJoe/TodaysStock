@@ -9,8 +9,8 @@ const axios = require("axios");
 export default MainScreen = ({ route, navigation }) => {
 	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
-	let code = (route.params) ? route.params.code : "000000";
-	let name = (route.params) ? route.params.name : "NULL";
+	let code = (route.params) ? route.params.code : "098120";
+	let name = (route.params) ? route.params.name : "";
 	
 	console.log("main : " + code);
 	
