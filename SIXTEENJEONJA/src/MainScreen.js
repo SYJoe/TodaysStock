@@ -42,15 +42,15 @@ export default MainScreen = ({ route, navigation }) => {
   		headers: {'User-Agent':'Chrome/81.0.4044.92'}
 	}).then(response => {
 				const cur_value_index = response.data.indexOf('현재가'); 
-				const cur_value = response.data.substr(cur_value_index + 4, 6);
+				const cur_value = response.data.substr(cur_value_index + 4, 10).split(" ");
 				const pre_value_index = response.data.indexOf('전일가'); 
-				const pre_value = response.data.substr(pre_value_index + 4, 6);
+				const pre_value = response.data.substr(pre_value_index + 4, 10).split("<");
     			
 				console.log("code : " + code);
-				console.log("cur_value : " + cur_value);
-				console.log("pre_value : " + pre_value);
+				console.log("cur_value : " + cur_value[0]);
+				console.log("pre_value : " + pre_value[0]);
 				
-				let sise = [cur_value, pre_value];
+				let sise = [cur_value[0], pre_value[0]];
 				setData(sise);
 			}).catch((error) => {
 				console.error(error);
@@ -76,8 +76,8 @@ export default MainScreen = ({ route, navigation }) => {
 	}, [route.params]);
 	
   const renderIconAndBackground = () => {
-	  var currentValue = data[0];
-	  var preValue = data[1];
+	  var currentValue = data[0]?.replace(',', '');
+	  var preValue = data[1]?.replace(',', '');
 	  const diff = currentValue - preValue;
 	  const diff_percent = (diff / preValue) * 100;
 	  
