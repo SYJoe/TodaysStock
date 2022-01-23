@@ -7,8 +7,8 @@ import { list } from './ParsingStockList.js'
 const axios = require("axios");
 
 export default ListScreen = ({ route, navigation }) => {
-	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
+	const [search, setSearch] = useState([]);
 	
 	const getList = async () => {
 		setData(list);	
@@ -23,7 +23,6 @@ export default ListScreen = ({ route, navigation }) => {
 		navigation.dispatch( navigation.navigate({
             name : 'Main',
             params : { code : item.code, name : item.name },
-            merge : true,
           }) );
   }
 	
@@ -37,22 +36,30 @@ export default ListScreen = ({ route, navigation }) => {
 	
 	return (
 		<SafeAreaView style={styles.container}>
-			<FlatList
-                renderItem={({ item }) => renderItem(item)}
-                keyExtractor={item => String(item.id)}
-                data={data}
-      		/>	
-			<SafeAreaView style = {styles.container_listbut}>
+			<SafeAreaView style={styles.container_list}>
+				<FlatList
+                	renderItem={({ item }) => renderItem(item)}
+                	keyExtractor={item => String(item.id)}
+                	data={data}
+      			/>	
+    		</SafeAreaView>
+			<SafeAreaView style = {styles.container_listbutton}>
 				<TouchableOpacity onPress={() => navigation.goBack()}>
 					<Image style = { styles.image_menu } source = { image_menu }/>
 				</TouchableOpacity>
 			</SafeAreaView>
-    	</SafeAreaView>
-  );
+		</SafeAreaView>
+	);
 };
 
 const styles = StyleSheet.create({
 	container: {
+		flex: 1,
+		backgroundColor: 'white',
+		flexDirection: 'column',
+		paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
+	},
+	container_list: {
 		flex: 1,
 		backgroundColor: 'white',
 		flexDirection: 'column',
@@ -134,16 +141,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: 'center',
   },
-	container_listbut: {
-		flex : 1,
+	container_listbutton: {
+		height : 56,
 		flexDirection : "row",
     	alignItems: "stretch",
     	justifyContent: "flex-end",
-		padding : 10
+		borderTopLeftRadius : 10,
+		borderTopRightRadius : 10,
+		backgroundColor : "#78909c"
 	},
 	image_menu:{
-        width:60,
-        height:60,
-        padding:10
+        width: 50,
+        height: 50
     }
 });

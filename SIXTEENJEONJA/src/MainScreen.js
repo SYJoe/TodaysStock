@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, AsyncStorage } from 'react-native';
 import Constants from 'expo-constants';
 import image_menu from '../assets/menu.png';
 import { LinearGradient } from "expo-linear-gradient";
@@ -9,29 +9,47 @@ const axios = require("axios");
 export default MainScreen = ({ route, navigation }) => {
 	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
-	let code = (route.params) ? route.params.code : "098120";
-	let name = (route.params) ? route.params.name : "";
 	
-	console.log("main : " + code);
+	let code = (route.params) ? route.params.code : "000000";
+	let name = (route.params) ? route.params.name : "null";
 	
-	const options = {
-		url: 'https://finance.naver.com/item/main.nhn?code=' + code,
-  		method: 'GET',
-  		headers: {'User-Agent':'Chrome/81.0.4044.92'}
+	const storeData = async () => {
+		try {
+			await AsyncStorage.setItem('code', code);
+		} catch (error) {
+			console.log("store failed!");
+		}
 	};
 	
-	console.log("url :" + options.url);
+	const retrieveData = async () => {
+		try {
+			const value = await AsyncStorage.getItem('code');
+			if (value !== null) {
+				console.log("stored data :" + value);
+				code = value;
+				console.log("code change :" + code);
+			}
+		} catch (error) {
+			console.log("no stored data!");
+		}
+	};
 	
 	const getSise = async () => {
-    	try {
-			axios(options).then(response => {
+		try {
+			axios({
+		url: 'https://finance.naver.com/item/main.naver?code=' + code,
+  		method: 'GET',
+  		headers: {'User-Agent':'Chrome/81.0.4044.92'}
+	}).then(response => {
 				const cur_value_index = response.data.indexOf('현재가'); 
 				const cur_value = response.data.substr(cur_value_index + 4, 6);
 				const pre_value_index = response.data.indexOf('전일가'); 
 				const pre_value = response.data.substr(pre_value_index + 4, 6);
-    			console.log("cur_value : " + cur_value);
+    			
+				console.log("code : " + code);
+				console.log("cur_value : " + cur_value);
 				console.log("pre_value : " + pre_value);
-				console.log(options.url);
+				
 				let sise = [cur_value, pre_value];
 				setData(sise);
 			}).catch((error) => {
@@ -43,14 +61,23 @@ export default MainScreen = ({ route, navigation }) => {
 			setLoading(false);
 		}
 	}
-
+	
 	useEffect(() => {
-		getSise();
+		if(code == "000000")
+		{
+			retrieveData();	
+			getSise();
+		}
+		else
+		{
+			getSise();
+			storeData();	
+		}
 	}, [route.params]);
 	
   const renderIconAndBackground = () => {
-	  var currentValue = data[0]?.replace(',', '');
-	  var preValue = data[1]?.replace(',', '');
+	  var currentValue = data[0];
+	  var preValue = data[1];
 	  const diff = currentValue - preValue;
 	  const diff_percent = (diff / preValue) * 100;
 	  
@@ -135,7 +162,7 @@ export default MainScreen = ({ route, navigation }) => {
 					</SafeAreaView>
 				</SafeAreaView>
 			</SafeAreaView>
-			<SafeAreaView style = {styles.container_listbut}>
+			<SafeAreaView style = {styles.container_listbutton}>
 				<TouchableOpacity onPress={() => navigation.navigate("List")}>
 					<Image style = { styles.image_menu } source = { image_menu }/>
 				</TouchableOpacity>
@@ -161,7 +188,7 @@ const styles = StyleSheet.create({
 		borderBottomLeftRadius : 10
 	},
 	container_card: {
-		flex: 15,
+		flex: 1,
 		margin : 20,
 		flexDirection: 'column',
     	alignItems: "stretch",
@@ -222,16 +249,15 @@ const styles = StyleSheet.create({
 		alignItems : "center",
     	justifyContent: "center",
 	},
-	container_listbut: {
-		flex : 1,
+	container_listbutton: {
+		height: 56,
 		flexDirection : "row",
     	alignItems: "stretch",
-    	justifyContent: "flex-end",
-		paddingBottom : 10
+    	justifyContent: "flex-end"
 	},
 	image_menu:{
-        width:60,
-        height:60
+        width: 50,
+        height: 50
     },
 	text_name : {
 		padding : 10,
