@@ -12,10 +12,12 @@ export default MainScreen = ({ route, navigation }) => {
 	
 	let code = (route.params) ? route.params.code : "000000";
 	let name = (route.params) ? route.params.name : "null";
+	let sig = (route.params) ? route.params.sig : false;
 	
 	const storeData = async () => {
 		try {
 			await AsyncStorage.setItem('code', code);
+			console.log("data store");
 		} catch (error) {
 			console.log("store failed!");
 		}
@@ -25,7 +27,6 @@ export default MainScreen = ({ route, navigation }) => {
 		try {
 			const value = await AsyncStorage.getItem('code');
 			if (value !== null) {
-				console.log("stored data :" + value);
 				code = value;
 				console.log("code change :" + code);
 			}
@@ -47,6 +48,7 @@ export default MainScreen = ({ route, navigation }) => {
 				const pre_value = response.data.substr(pre_value_index + 4, 10).split("<");
     			
 				console.log("code : " + code);
+				//console.log(response.data);
 				console.log("cur_value : " + cur_value[0]);
 				console.log("pre_value : " + pre_value[0]);
 				
@@ -63,16 +65,18 @@ export default MainScreen = ({ route, navigation }) => {
 	}
 	
 	useEffect(() => {
-		if(code == "000000")
+		if(sig)
 		{
-			retrieveData();	
+			//console.log("if");
 			getSise();
+			storeData();
 		}
 		else
-		{
+		{	
+			retrieveData();
 			getSise();
-			storeData();	
 		}
+		sig = false;
 	}, [route.params]);
 	
   const renderIconAndBackground = () => {
@@ -216,7 +220,7 @@ const styles = StyleSheet.create({
     	justifyContent: "center",
 		borderTopLeftRadius : 10,
 		borderTopRightRadius : 10,
-		
+		paddingTop : 10
 	},
 	text_sise: {
 		fontSize: 40,

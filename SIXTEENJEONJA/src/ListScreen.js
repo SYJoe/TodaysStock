@@ -22,7 +22,7 @@ export default ListScreen = ({ route, navigation }) => {
     	console.log('onPressItem =', item.code);
 		navigation.dispatch( navigation.navigate({
             name : 'Main',
-            params : { code : item.code, name : item.name },
+            params : { code : item.code, name : item.name, sig : true },
           }) );
   }
 	
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     	justifyContent: "flex-end",
 		borderTopLeftRadius : 10,
 		borderTopRightRadius : 10,
-		backgroundColor : "#78909c"
+		backgroundColor : "#d7ccc8"
 	},
 	image_menu:{
         width: 50,
