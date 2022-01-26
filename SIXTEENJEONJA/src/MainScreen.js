@@ -14,6 +14,35 @@ export default MainScreen = ({ route, navigation }) => {
 	let name = (route.params) ? route.params.name : "null";
 	let sig = (route.params) ? route.params.sig : false;
 	
+	const getSise = async () => {
+		try {
+			axios({
+		url: 'https://finance.naver.com/item/main.naver?code=' + code,
+  		method: 'GET',
+  		headers: {'User-Agent':'Chrome/81.0.4044.92'}
+	}).then(response => {
+				const cur_value_index = response.data.indexOf('현재가'); 
+				const cur_value = response.data.substr(cur_value_index + 4, 10).split(" ");
+				const pre_value_index = response.data.indexOf('전일가'); 
+				const pre_value = response.data.substr(pre_value_index + 4, 10).split("<");
+    			
+				console.log("code : " + code);
+				console.log(response.data);
+				console.log("cur_value : " + cur_value[0]);
+				console.log("pre_value : " + pre_value[0]);
+				
+				let sise = [cur_value[0], pre_value[0]];
+				setData(sise);
+			}).catch((error) => {
+				console.error(error);
+			});
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setLoading(false);
+		}
+	}
+	
 	const storeData = async () => {
 		try {
 			await AsyncStorage.setItem('code', code);
@@ -33,48 +62,19 @@ export default MainScreen = ({ route, navigation }) => {
 		} catch (error) {
 			console.log("no stored data!");
 		}
+		getSise();
 	};
-	
-	const getSise = async () => {
-		try {
-			axios({
-		url: 'https://finance.naver.com/item/main.naver?code=' + code,
-  		method: 'GET',
-  		headers: {'User-Agent':'Chrome/81.0.4044.92'}
-	}).then(response => {
-				const cur_value_index = response.data.indexOf('현재가'); 
-				const cur_value = response.data.substr(cur_value_index + 4, 10).split(" ");
-				const pre_value_index = response.data.indexOf('전일가'); 
-				const pre_value = response.data.substr(pre_value_index + 4, 10).split("<");
-    			
-				console.log("code : " + code);
-				//console.log(response.data);
-				console.log("cur_value : " + cur_value[0]);
-				console.log("pre_value : " + pre_value[0]);
-				
-				let sise = [cur_value[0], pre_value[0]];
-				setData(sise);
-			}).catch((error) => {
-				console.error(error);
-			});
-		} catch (error) {
-			console.error(error);
-		} finally {
-			setLoading(false);
-		}
-	}
 	
 	useEffect(() => {
 		if(sig)
 		{
-			//console.log("if");
+			console.log("if");
 			getSise();
 			storeData();
 		}
 		else
 		{	
 			retrieveData();
-			getSise();
 		}
 		sig = false;
 	}, [route.params]);
@@ -145,27 +145,27 @@ export default MainScreen = ({ route, navigation }) => {
 				{renderIconAndBackground()}
 				<SafeAreaView style={styles.container_sise}>
 					<SafeAreaView style = {styles.container_current}>
-						<SafeAreaView style = {styles.container_sise_text}>
-							<Text style ={styles.text_sise1}>
-								{"현재가  "}
-							</Text>
-						</SafeAreaView>
-						<Text style ={styles.text_sise}>
-							{data[0]}
-						</Text>
-					</SafeAreaView>
-					<SafeAreaView style = {styles.container_current}>
-						<SafeAreaView style = {styles.container_sise_text}>
-							<Text style ={styles.text_sise1}>
+						<SafeAreaView style = {styles.container_sisename_pre}>
+							<Text style ={styles.text_sisename_pre}>
 								{"전일가  "}
 							</Text>
 						</SafeAreaView>
-						<Text style ={styles.text_sise}>
+						<Text style ={styles.text_sise_pre}>
 							{data[1]}
 						</Text>
 					</SafeAreaView>
+					<SafeAreaView style = {styles.container_current}>
+					<SafeAreaView style = {styles.container_sisename_cur}>
+						<Text style ={styles.text_sisename_cur}>
+							{"현재가  "}
+						</Text>
+					</SafeAreaView>
+					<Text style ={styles.text_sise_cur}>
+						{data[0]}
+					</Text>
+					</SafeAreaView>
 				</SafeAreaView>
-			</SafeAreaView>
+				</SafeAreaView>
 			<SafeAreaView style = {styles.container_listbutton}>
 				<TouchableOpacity onPress={() => navigation.navigate("List")}>
 					<Image style = { styles.image_menu } source = { image_menu }/>
@@ -222,12 +222,20 @@ const styles = StyleSheet.create({
 		borderTopRightRadius : 10,
 		paddingTop : 10
 	},
-	text_sise: {
+	text_sise_cur: {
 		fontSize: 40,
     	color: "black",
 	},
-	text_sise1: {
+	text_sise_pre: {
+		fontSize: 25,
+    	color: "black",
+	},
+	text_sisename_cur: {
 		fontSize: 20,
+		color: "black",
+	},
+	text_sisename_pre: {
+		fontSize: 15,
 		color: "black",
 	},
 	text_diffup: {
@@ -241,8 +249,11 @@ const styles = StyleSheet.create({
 	container_current: {
 		flexDirection: 'row'
   	},
-	container_sise_text: {
+	container_sisename_cur: {
 		paddingTop: 20
+  	},
+	container_sisename_pre: {
+		paddingTop: 10
   	},
 	container_diff: {
 		padding : 10,
