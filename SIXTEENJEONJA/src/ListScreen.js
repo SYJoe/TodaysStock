@@ -10,12 +10,8 @@ export default ListScreen = ({ route, navigation }) => {
 	const [data, setData] = useState([]);
 	const [search, setSearch] = useState([]);
 	
-	const getList = async () => {
-		setData(list);	
-	}
-	
 	useEffect(() => {
-		getList();
+		setData(list);	
 	}, []);
 	
 	const onPressItem = (item) => {

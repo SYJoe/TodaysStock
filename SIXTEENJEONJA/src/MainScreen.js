@@ -3,16 +3,23 @@ import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Imag
 import Constants from 'expo-constants';
 import image_menu from '../assets/menu.png';
 import { LinearGradient } from "expo-linear-gradient";
+import { list } from './ParsingStockList.js'
 
 const axios = require("axios");
 
 export default MainScreen = ({ route, navigation }) => {
 	const [isLoading, setLoading] = useState(true);
 	const [data, setData] = useState([]);
+	const [name, setName] = useState([]);
 	
 	let code = (route.params) ? route.params.code : "000000";
-	let name = (route.params) ? route.params.name : "null";
 	let sig = (route.params) ? route.params.sig : false;
+	
+	const getName = async () => {
+		let index = list.findIndex(obj => obj.code == code);
+		setName(list[index].name);
+		console.log(name);
+	}	
 	
 	const getSise = async () => {
 		try {
@@ -27,7 +34,6 @@ export default MainScreen = ({ route, navigation }) => {
 				const pre_value = response.data.substr(pre_value_index + 4, 10).split("<");
     			
 				console.log("code : " + code);
-				console.log(response.data);
 				console.log("cur_value : " + cur_value[0]);
 				console.log("pre_value : " + pre_value[0]);
 				
@@ -54,22 +60,23 @@ export default MainScreen = ({ route, navigation }) => {
 	
 	const retrieveData = async () => {
 		try {
-			const value = await AsyncStorage.getItem('code');
-			if (value !== null) {
-				code = value;
+			const value_code = await AsyncStorage.getItem('code');
+			if (value_code !== null) {
+				code = value_code;
 				console.log("code change :" + code);
 			}
 		} catch (error) {
 			console.log("no stored data!");
 		}
 		getSise();
+		getName();
 	};
 	
 	useEffect(() => {
 		if(sig)
 		{
-			console.log("if");
 			getSise();
+			getName();
 			storeData();
 		}
 		else
