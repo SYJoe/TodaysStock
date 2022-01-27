@@ -18,7 +18,6 @@ export default MainScreen = ({ route, navigation }) => {
 	const getName = async () => {
 		let index = list.findIndex(obj => obj.code == code);
 		setName(list[index].name);
-		console.log(name);
 	}	
 	
 	const getSise = async () => {

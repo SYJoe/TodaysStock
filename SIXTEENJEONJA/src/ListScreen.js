@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     borderWidth: 1,
-    borderRadius: 30,
     margin: 3,
   },
   text_item: {
