@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { list } from './ParsingStockList.js'
 
 const axios = require("axios");
+StatusBar.setBackgroundColor('white');
 
 export default MainScreen = ({ route, navigation }) => {
 	const [isLoading, setLoading] = useState(true);

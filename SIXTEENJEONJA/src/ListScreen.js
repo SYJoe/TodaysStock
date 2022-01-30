@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, StatusBar } from 'react-native';
+import { SearchBar } from 'react-native-elements';
 import Constants from 'expo-constants';
 import image_menu from '../assets/menu.png'
 import { list } from './ParsingStockList.js'
 
-const axios = require("axios");
-
 export default ListScreen = ({ route, navigation }) => {
 	const [data, setData] = useState([]);
 	const [search, setSearch] = useState([]);
+  const [masterData, setMasterData] = useState([]);
+	StatusBar.setBackgroundColor('#d7ccc8');
 	
 	useEffect(() => {
-		setData(list);	
+		setData(list);
+		setMasterData(list);
 	}, []);
 	
 	const onPressItem = (item) => {
@@ -30,9 +32,36 @@ export default ListScreen = ({ route, navigation }) => {
     );
   }
 	
+	const searchFilterFunction = (text) => {
+		if (text) {
+			const newData = masterData.filter(function (item) {
+				const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+        		const textData = text.toUpperCase();
+        		return itemData.indexOf(textData) > -1;
+			});
+			setData(newData);
+      		setSearch(text);
+    	} else {
+			setData(masterData);
+      		setSearch(text);
+		}
+	};
+	
 	return (
 		<SafeAreaView style={styles.container}>
 			<SafeAreaView style={styles.container_list}>
+				<SearchBar
+        			round
+					inputStyle={{backgroundColor: '#f3e8e4'}}
+					inputContainerStyle={{backgroundColor: '#f3e8e4'}}
+					containerStyle={{backgroundColor: '#d7ccc8'}}
+          			searchIcon={{ size: 24 }}
+          			onChangeText={(text) => searchFilterFunction(text)}
+          			onClear={(text) => searchFilterFunction('')}
+          			value={search}
+          			placeholder="종목명 검색"
+    				placeholderTextColor={'#000000'}
+      			/>
 				<FlatList
                 	renderItem={({ item }) => renderItem(item)}
                 	keyExtractor={item => String(item.id)}
@@ -59,66 +88,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: 'white',
 		flexDirection: 'column',
-		paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
-	},
-	container_sise: {
-		flex : 1,
-		backgroundColor : "#f5f5f5",
-    	flexDirection: 'column',
-    	alignItems: "center",
-    	justifyContent: "center",
-		borderBottomRightRadius : 10,
-		borderBottomLeftRadius : 10
-	},
-	container_card: {
-		flex: 15,
-		margin : 20,
-		flexDirection: 'column',
-    	alignItems: "stretch",
-    	justifyContent: "center",
-		borderRadius: 10,
-		...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 10,
-          height: 10,
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 10,
-      },
-      android: {
-        elevation: 20,
-      },
-		})
-	},
-	container_card_up: {
-		flex : 3,
-    	flexDirection: 'column',
-    	alignItems: "center",
-    	justifyContent: "center",
-		borderTopLeftRadius : 10,
-		borderTopRightRadius : 10
-	},
-	text_sise: {
-		fontSize: 40,
-    	color: "black",
-	},
-	text_sise1: {
-		fontSize: 20,
-		color: "black",
-	},
-	text_updown: {
-		fontSize: 20
-	},
-	container_current: {
-		flexDirection: 'row'
-  	},
-	container_sise_text: {
-		paddingTop: 20
-  	},
-	container_diff: {
-		flex : 1
 	},
 	container_icon: {
 		flex : 13,
