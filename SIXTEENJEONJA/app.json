@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "SIXTEENJEONJA",
-    "slug": "SIXTEENJEONJA",
+    "name": "오늘의 주식",
+    "slug": "TodaysStock",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ineeddesigner_logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/ineeddesigner_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
