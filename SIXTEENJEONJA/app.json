@@ -4,11 +4,10 @@
     "slug": "TodaysStock",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/ineeddesigner_logo.png",
+    "icon": "./assets/ic_launcher.png",
     "splash": {
       "image": "./assets/ineeddesigner_splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
     },
     "updates": {
       "fallbackToCacheTimeout": 0
