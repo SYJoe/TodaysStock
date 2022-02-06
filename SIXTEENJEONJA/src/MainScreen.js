@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, AsyncStorage, StatusBar, RefreshControl, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
-import image_menu from '../assets/menu.png';
 import { LinearGradient } from "expo-linear-gradient";
 import { list } from './ParsingStockList.js'
 
+import image_menu from "../assets/menu.png";
+import image_refresh from "../assets/refresh.png";
+
 const axios = require("axios");
-StatusBar.setBackgroundColor('white');
+
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export default MainScreen = ({ route, navigation }) => {
-	const [isLoading, setLoading] = useState(true);
+	const [isLoading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
 	const [name, setName] = useState([]);
+	const [refreshing, setRefreshing] = useState(false);
 	
 	let code = (route.params) ? route.params.code : "000000";
 	let sig = (route.params) ? route.params.sig : false;
@@ -73,6 +79,7 @@ export default MainScreen = ({ route, navigation }) => {
 	};
 	
 	useEffect(() => {
+		StatusBar.setBackgroundColor('white');
 		if(sig)
 		{
 			getSise();
@@ -85,6 +92,11 @@ export default MainScreen = ({ route, navigation }) => {
 		}
 		sig = false;
 	}, [route.params]);
+	
+	const onRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		getSise().then(() => setRefreshing(false));
+	}, []);
 	
   const renderIconAndBackground = () => {
 	  var currentValue = data[0]?.replace(',', '');
@@ -148,6 +160,14 @@ export default MainScreen = ({ route, navigation }) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
+			<ScrollView
+				contentContainerStyle={styles.scrollView}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						/>
+				}>
 			<SafeAreaView style = {styles.container_card}>
 				{renderIconAndBackground()}
 				<SafeAreaView style={styles.container_sise}>
@@ -162,27 +182,33 @@ export default MainScreen = ({ route, navigation }) => {
 						</Text>
 					</SafeAreaView>
 					<SafeAreaView style = {styles.container_current}>
-					<SafeAreaView style = {styles.container_sisename_cur}>
-						<Text style ={styles.text_sisename_cur}>
-							{"현재가  "}
+						<SafeAreaView style = {styles.container_sisename_cur}>
+							<Text style ={styles.text_sisename_cur}>
+								{"현재가  "}
+							</Text>
+						</SafeAreaView>
+						<Text style ={styles.text_sise_cur}>
+							{data[0]}
 						</Text>
 					</SafeAreaView>
-					<Text style ={styles.text_sise_cur}>
-						{data[0]}
-					</Text>
-					</SafeAreaView>
 				</SafeAreaView>
-				</SafeAreaView>
+			</SafeAreaView>
 			<SafeAreaView style = {styles.container_listbutton}>
 				<TouchableOpacity onPress={() => navigation.navigate("List")}>
 					<Image style = { styles.image_menu } source = { image_menu }/>
 				</TouchableOpacity>
 			</SafeAreaView>
+			</ScrollView>
     	</SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+	 scrollView: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
@@ -272,7 +298,13 @@ const styles = StyleSheet.create({
     	justifyContent: "center",
 	},
 	container_listbutton: {
-		height: 56,
+		height: 50,
+		flexDirection : "row",
+    	alignItems: "stretch",
+    	justifyContent: "flex-end"
+	},
+	container_refreshbutton: {
+		height: 25,
 		flexDirection : "row",
     	alignItems: "stretch",
     	justifyContent: "flex-end"
@@ -280,6 +312,10 @@ const styles = StyleSheet.create({
 	image_menu:{
         width: 50,
         height: 50
+    },
+	image_refresh:{
+        width: 20,
+        height: 20
     },
 	text_name : {
 		padding : 10,
