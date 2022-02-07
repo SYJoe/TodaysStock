@@ -2,21 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, StatusBar, Dimensions } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import Constants from 'expo-constants';
+
 import image_menu from '../assets/menu.png';
 import { list } from './ParsingStockList.js';
 
 export default ListScreen = ({ route, navigation }) => {
-	const [data, setData] = useState([]);
+	const [data, setData] = useState(list);
 	const [search, setSearch] = useState([]);
-	const [masterData, setMasterData] = useState([]);
+	const [masterData, setMasterData] = useState(list);
 	StatusBar.setBackgroundColor('#d7ccc8');
 	
-	useEffect(() => {
-		setData(list);
-		setMasterData(list);
-	}, []);
-	
 	const onPressItem = (item) => {
+		StatusBar.setBackgroundColor('white');
     	console.log('onPressItem =', item.code);
 		navigation.dispatch( navigation.navigate({
 			name : 'Main',
@@ -98,11 +95,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: 'white',
 		flexDirection: 'column',
-	},
-	container_icon: {
-		flex : 13,
-		alignItems : "center",
-    	justifyContent: "center",
 	},
 	item: {
 		flex: 1,

@@ -2,22 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, AsyncStorage, StatusBar, RefreshControl, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import { LinearGradient } from "expo-linear-gradient";
-import { list } from './ParsingStockList.js'
+import axios from 'axios';
 
+import { list } from './ParsingStockList.js';
+import { getSise } from './getSise.js';
 import image_menu from "../assets/menu.png";
 import image_refresh from "../assets/refresh.png";
 
-const axios = require("axios");
-
-const wait = (timeout) => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-}
-
 export default MainScreen = ({ route, navigation }) => {
-	const [isLoading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
 	const [name, setName] = useState([]);
-	const [refreshing, setRefreshing] = useState(false);
+	const [isRefreshing, setRefreshing] = useState(false);
 	
 	let code = (route.params) ? route.params.code : "000000";
 	let sig = (route.params) ? route.params.sig : false;
@@ -51,7 +46,6 @@ export default MainScreen = ({ route, navigation }) => {
 		} catch (error) {
 			console.error(error);
 		} finally {
-			setLoading(false);
 		}
 	}
 	
@@ -79,7 +73,6 @@ export default MainScreen = ({ route, navigation }) => {
 	};
 	
 	useEffect(() => {
-		StatusBar.setBackgroundColor('white');
 		if(sig)
 		{
 			getSise();
@@ -95,10 +88,10 @@ export default MainScreen = ({ route, navigation }) => {
 	
 	const onRefresh = React.useCallback(() => {
 		setRefreshing(true);
-		getSise().then(() => setRefreshing(false));
+		retrieveData().then(() => setRefreshing(false));
 	}, []);
 	
-  const renderIconAndBackground = () => {
+	const renderIconAndBackground = () => {
 	  var currentValue = data[0]?.replace(',', '');
 	  var preValue = data[1]?.replace(',', '');
 	  const diff = currentValue - preValue;
@@ -164,7 +157,7 @@ export default MainScreen = ({ route, navigation }) => {
 				contentContainerStyle={styles.scrollView}
 				refreshControl={
 					<RefreshControl
-						refreshing={refreshing}
+						refreshing={isRefreshing}
 						onRefresh={onRefresh}
 						/>
 				}>
@@ -231,20 +224,11 @@ const styles = StyleSheet.create({
     	alignItems: "stretch",
     	justifyContent: "center",
 		borderRadius: 10,
-		...Platform.select({
-      ios: {
         shadowColor: "#000",
-        shadowOffset: {
-          width: 10,
-          height: 10,
-        },
+        shadowOffset: { width: 10, height: 10 },
         shadowOpacity: 0.5,
         shadowRadius: 10,
-      },
-      android: {
-        elevation: 20,
-      },
-		})
+        elevation: 20
 	},
 	container_card_up: {
 		flex : 3,
