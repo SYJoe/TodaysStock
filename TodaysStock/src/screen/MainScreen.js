@@ -4,17 +4,80 @@ import Constants from 'expo-constants';
 import { LinearGradient } from "expo-linear-gradient";
 import axios from 'axios';
 
-import { list } from './ParsingStockList.js';
-import { getSise } from './getSise.js';
-import image_menu from "../assets/menu.png";
+import { list } from '../data/ParsingStockList.js';
+import { getSise } from '../network/getSise.js';
+import image_menu from "../../assets/menu.png";
+import image_bookmark from '../../assets/bookmark.png';
+export let bookmark = [];
 
 export default MainScreen = ({ route, navigation }) => {
 	const [data, setData] = useState([]);
 	const [name, setName] = useState([]);
 	const [isRefreshing, setRefreshing] = useState(false);
+	const [isBookmark, setIsBookmark] = useState(false);
 	
 	let code = (route.params) ? route.params.code : "000000";
 	let sig = (route.params) ? route.params.sig : false;
+	
+	const storeBookmark = async () => {
+		try {
+			await AsyncStorage.setItem('bookmark', JSON.stringify(bookmark));
+		} catch (error) {
+			console.log(error);
+		}
+	}
+	
+	const retrieveBookmark = async () => {
+		try {
+				const bookmark_asyncstorage = JSON.parse(await AsyncStorage.getItem('bookmark'));
+				if (bookmark_asyncstorage !== null) {
+					bookmark = bookmark_asyncstorage;
+				}
+			} catch (error) {
+				console.log(error);
+			}
+	}
+	
+	const onBookmark = async (code) => {
+		const index = bookmark.indexOf(code); 
+		if(index > -1)
+		{
+  			bookmark.splice(index, 1);
+			setIsBookmark(false);
+			console.log("pop ", code);
+		}
+		else
+		{
+			bookmark.push(code);
+			setIsBookmark(true);
+			console.log("push ", code);
+		}
+		console.log(bookmark);
+		storeBookmark();
+	}
+	
+	const bookmarkComponent = (code) => {
+		if(bookmark.indexOf(code) > -1)
+		{	
+				console.log("yellow");
+			return {
+				paddingLeft : 10,
+				height : 20, 
+				width : 20,
+				tintColor : '#fdd835'
+			}
+		}
+		else
+		{	
+				console.log("black");
+			return {
+				paddingLeft : 10,
+				height : 20, 
+				width : 20,
+				tintColor : 'black'
+			}
+		}
+	}
 	
 	const getName = async () => {
 		let index = list.findIndex(obj => obj.code == code);
@@ -55,6 +118,7 @@ export default MainScreen = ({ route, navigation }) => {
 		{	
 			retrieveData();
 		}
+		retrieveBookmark();
 		sig = false;
 	}, [route.params]);
 	
@@ -138,27 +202,32 @@ export default MainScreen = ({ route, navigation }) => {
 				}>
 			<SafeAreaView style = {styles.container_card}>
 				{renderIconAndBackground()}
-				<SafeAreaView style={styles.container_sise}>
-					<SafeAreaView style = {styles.container_current}>
-						<SafeAreaView style = {styles.container_sisename_pre}>
-							<Text style ={styles.text_sisename_pre}>
-								{"전일가  "}
+				<SafeAreaView style={styles.container_bottomcard}>
+					<SafeAreaView style = {styles.container_sise}>
+						<SafeAreaView style = {styles.container_current}>
+							<SafeAreaView style = {styles.container_sisename_pre}>
+								<Text style ={styles.text_sisename_pre}>
+									{"전일가  "}
+								</Text>
+							</SafeAreaView>
+							<Text style ={styles.text_sise_pre}>
+								{data[1]}
 							</Text>
 						</SafeAreaView>
-						<Text style ={styles.text_sise_pre}>
-							{data[1]}
-						</Text>
-					</SafeAreaView>
-					<SafeAreaView style = {styles.container_current}>
-						<SafeAreaView style = {styles.container_sisename_cur}>
-							<Text style ={styles.text_sisename_cur}>
-								{"현재가  "}
+						<SafeAreaView style = {styles.container_current}>
+							<SafeAreaView style = {styles.container_sisename_cur}>
+								<Text style ={styles.text_sisename_cur}>
+									{"현재가  "}
+								</Text>
+							</SafeAreaView>
+							<Text style ={styles.text_sise_cur}>
+								{data[0]}
 							</Text>
 						</SafeAreaView>
-						<Text style ={styles.text_sise_cur}>
-							{data[0]}
-						</Text>
 					</SafeAreaView>
+					<TouchableOpacity style = {{flex: 1}} onPress={() => onBookmark(code)}>
+						<Image style = {bookmarkComponent(code)} source = { image_bookmark }/>
+					</TouchableOpacity>
 				</SafeAreaView>
 			</SafeAreaView>
 			<SafeAreaView style = {styles.container_underbar}>
@@ -172,25 +241,29 @@ export default MainScreen = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
-	 scrollView: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-  },
+	scrollView: {
+		flex: 1,
+		backgroundColor: 'white',
+		justifyContent: 'center',
+	},
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
 		flexDirection: 'column',
 		paddingTop: Platform.OS === `ios` ? 0 : Constants.statusBarHeight,
 	},
-	container_sise: {
+	container_bottomcard: {
 		flex : 1,
 		backgroundColor : "#f5f5f5",
     	flexDirection: 'column',
-    	alignItems: "center",
-    	justifyContent: "center",
 		borderBottomRightRadius : 10,
 		borderBottomLeftRadius : 10
+	},
+	container_sise : {
+		flex : 6, 
+    	flexDirection: 'column',
+    	alignItems: "center",
+    	justifyContent: "center",
 	},
 	container_card: {
 		flex: 1,
@@ -239,7 +312,7 @@ const styles = StyleSheet.create({
 		color : '#1e88e5'
 	},
 	container_current: {
-		flexDirection: 'row'
+		flexDirection: 'row',
   	},
 	container_sisename_cur: {
 		paddingTop: 20
