@@ -44,13 +44,11 @@ export default MainScreen = ({ route, navigation }) => {
 		{
   			bookmark.splice(index, 1);
 			setIsBookmark(false);
-			console.log("pop ", code);
 		}
 		else
 		{
 			bookmark.push(code);
 			setIsBookmark(true);
-			console.log("push ", code);
 		}
 		console.log(bookmark);
 		storeBookmark();
@@ -59,7 +57,6 @@ export default MainScreen = ({ route, navigation }) => {
 	const bookmarkComponent = (code) => {
 		if(bookmark.indexOf(code) > -1)
 		{	
-				console.log("yellow");
 			return {
 				paddingLeft : 10,
 				height : 20, 
@@ -69,7 +66,6 @@ export default MainScreen = ({ route, navigation }) => {
 		}
 		else
 		{	
-				console.log("black");
 			return {
 				paddingLeft : 10,
 				height : 20, 

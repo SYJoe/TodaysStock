@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, StatusBar, Dimensions } from 'react-native';
+import { FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, StatusBar, Dimensions, Alert } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 import Constants from 'expo-constants';
 
@@ -32,13 +32,12 @@ export default ListScreen = ({ route, navigation }) => {
 	const renderItem = (item) => {
 		return (
 			<TouchableOpacity style={styles.item} onPress={() => onPressItem(item)}>
-					<Text style={styles.text_item}>{item.name}</Text>
+				<Text style={styles.text_item}>{item.name}</Text>
 			</TouchableOpacity>
 		);
 	}
 	
 	const onIsBookmark = async () => {
-		console.log(bookmark);
 		if(isBookmark)
 		{
 			setIsBookmark(false);
@@ -47,9 +46,17 @@ export default ListScreen = ({ route, navigation }) => {
 		else
 		{
 			setIsBookmark(true);
-			const bookmarkedData = masterData.filter(e => e.code === bookmark[1]);
-			console.log(bookmarkedData);
-			setData(bookmarkedData);
+			const bookmarkedData = [];
+			masterData.filter(function (e) {
+				for(let i = 0; i < bookmark.length; i++)
+				{
+					if(e.code === bookmark[i])
+					{	console.log(e);
+						bookmarkedData.push(e);
+					}
+				}
+				setData(bookmarkedData);
+			});
 		}
 	}
 	
@@ -101,7 +108,7 @@ export default ListScreen = ({ route, navigation }) => {
 									borderBottomLeftRadius : 10,
 									borderBottomRightRadius : 10,
 									borderBottomColor: 'transparent',
- 									borderTopColor: '#d7ccc8'}}
+ 									borderTopColor: '#d7ccc8'	}}
           		searchIcon={{ size: 24 }}
           		onChangeText={(text) => searchFilterFunction(text)}
           		onClear={(text) => searchFilterFunction('')}
@@ -109,13 +116,15 @@ export default ListScreen = ({ route, navigation }) => {
           		placeholder="종목명 검색"
     			placeholderTextColor={'#000000'}
       		/>
+			<SafeAreaView style = {styles.container_list}>
 			<FlatList
-				style={styles.container_list}
+				style = {styles.container_list}
 				renderItem={({ item }) => renderItem(item)}
 				keyExtractor={item => String(item.id)}
 				data={data}
 				numColumns={2}
-      		/>	
+      		/>
+			</SafeAreaView>
 			<SafeAreaView style = {styles.container_underbar}>
 				<TouchableOpacity onPress={() => onIsBookmark()}>
 					<Image style = { isBookmarkComponent() } source = { image_bookmark }/>
