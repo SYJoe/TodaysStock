@@ -6,9 +6,16 @@
 ###### 이 프로젝트는 ReactNative로 진행 할 예정이다. 
 ###### ~~(제발 삼성전자 80층까지 만이라도 와주세요 제발요)~~
 
-![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/MainScreenImg.jpg)
+  
+  
+  
 ###### [MainScreen]
-![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/ListScreenImg.jpg)
+![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/MainScreenImg.jpg)
+
+
 ###### [ListScreen]
-![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/BookmarkScreenImg.jpg)
+![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/ListScreenImg.jpg)
+
+
 ###### [BookmarkScreen]
+![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/BookmarkScreenImg.jpg)
