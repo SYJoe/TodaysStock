@@ -5,3 +5,10 @@
 ###### 이런 동기를 위해 주가의 상승과 하락을 드라마틱하게 볼 수 있는 앱을 만들 예정이다.
 ###### 이 프로젝트는 ReactNative로 진행 할 예정이다. 
 ###### ~~(제발 삼성전자 80층까지 만이라도 와주세요 제발요)~~
+
+![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/MainScreenImg.jpg)
+###### [MainScreen]
+![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/ListScreenImg.jpg)
+###### [ListScreen]
+![play img](https://github.com/SYJoe/TodaysStock/blob/main/img/BookmarkScreenImg.jpg)
+###### [BookmarkScreen]
