@@ -5,8 +5,8 @@ import Constants from 'expo-constants';
 
 import image_bookmark from '../../assets/bookmark.png';
 import image_menu from '../../assets/menu.png';
-import { list } from '../data/ParsingStockList.js';
-import { bookmark } from './MainScreen.js';
+import { list } from '../data/ParsingStockList.js.js';
+import { bookmark } from './MainScreen.js.js';
 
 export default ListScreen = ({ route, navigation }) => {
 	const [data, setData] = useState(list);

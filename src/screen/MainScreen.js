@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, AsyncStorage, StatusBar, RefreshControl, ScrollView, Dimensions } from 'react-native';
+import { FlatList, Text, View, StyleSheet, SafeAreaView, Image, TouchableOpacity, AsyncStorage, StatusBar, RefreshControl, ScrollView, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 import { LinearGradient } from "expo-linear-gradient";
 import axios from 'axios';
+import Carousel from 'react-native-snap-carousel';
 
-import { list } from '../data/ParsingStockList.js';
-import { getSise } from '../network/getSise.js';
+import { list } from '../data/ParsingStockList.js.js';
+import { getSise } from '../network/getSise.js.js';
 import image_menu from "../../assets/menu.png";
 import image_bookmark from '../../assets/bookmark.png';
 export let bookmark = [];
+let viewList = [];
 
 export default MainScreen = ({ route, navigation }) => {
 	const [data, setData] = useState([]);
@@ -32,6 +34,7 @@ export default MainScreen = ({ route, navigation }) => {
 				const bookmark_asyncstorage = JSON.parse(await AsyncStorage.getItem('bookmark'));
 				if (bookmark_asyncstorage !== null) {
 					bookmark = bookmark_asyncstorage;
+					viewList = bookmark_asyncstorage;
 				}
 			} catch (error) {
 				console.log(error);
@@ -39,7 +42,7 @@ export default MainScreen = ({ route, navigation }) => {
 	}
 	
 	const onBookmark = async (code) => {
-		const index = bookmark.indexOf(code); 
+		const index = bookmark.code.indexOf(code); 
 		if(index > -1)
 		{
   			bookmark.splice(index, 1);
@@ -108,7 +111,7 @@ export default MainScreen = ({ route, navigation }) => {
 	useEffect(() => {
 		if(sig)
 		{ 
-			storeData();
+			viewList.push(code);
 		}
 		else
 		{	
@@ -186,16 +189,8 @@ export default MainScreen = ({ route, navigation }) => {
 		}
 	}
 
-	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView
-				contentContainerStyle={styles.scrollView}
-				refreshControl={
-					<RefreshControl
-						refreshing={isRefreshing}
-						onRefresh={onRefresh}
-						/>
-				}>
+	const renderCardView = ({item, index}) => {
+		return(
 			<SafeAreaView style = {styles.container_card}>
 				{renderIconAndBackground()}
 				<SafeAreaView style={styles.container_bottomcard}>
@@ -226,6 +221,29 @@ export default MainScreen = ({ route, navigation }) => {
 					</TouchableOpacity>
 				</SafeAreaView>
 			</SafeAreaView>
+			  )
+	}
+	
+	return (
+		<SafeAreaView style={styles.container}>
+			<ScrollView
+				contentContainerStyle={styles.scrollView}
+				refreshControl={
+					<RefreshControl
+						refreshing={isRefreshing}
+						onRefresh={onRefresh}
+						/>
+				}>
+				<SafeAreaView style = {styles.container_card}>
+				<Carousel 
+					layout={'default'}
+              		//ref={(c) => { this._carousel = c; }}
+              		data={viewList}
+              		renderItem={renderCardView}
+              		sliderWidth={10}
+              		itemWidth={80}
+            	/>
+					</SafeAreaView>
 			<SafeAreaView style = {styles.container_underbar}>
 				<TouchableOpacity onPress={() => navigation.navigate("List")}>
 					<Image style = { styles.container_menu } source = { image_menu }/>
@@ -343,5 +361,16 @@ const styles = StyleSheet.create({
 		padding : 10,
 		fontSize : 25,
 		color : 'white'
-	}
+	},
+	container_card: {
+		flex: 1,
+		margin : 20,
+		flexDirection: 'column',
+		borderRadius: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 10, height: 10 },
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        elevation: 20
+	},
 });
